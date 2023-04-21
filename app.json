@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "joker-eat-app",
-    "slug": "joker-eat-app",
+    "name": "eat-app",
+    "slug": "eat-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
