@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3e09a909-b398-4e36-862d-9c30b9ee095e"
+      }
+    },
+    "owner": "jokalsx"
   }
 }
