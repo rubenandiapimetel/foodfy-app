@@ -22,20 +22,45 @@ export default function App() {
     androidClientId: "379843320383-tpipjmu29504hka0j2g5qlkka59v8j5c.apps.googleusercontent.com"
   });
 
+  React.useEffect(() => {
+    handleSignWhitGoogle();
+  }, [response])
+
+  async function handleSignWhitGoogle(){
+    const user = await getLocalUser();
+    if (!user){
+      if (response?.type === "success"){
+        getUser(response.authentication.accessToken)
+      }
+    } else {
+      setUser(user); 
+    }
+  }
+
+
+
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("@user");
     if (!data) return null;
     return JSON.parse(data);
   };
+
+  const getUserInfo = async (token) =>{
+    if (!token) return;
+    try {
+        const respose = await fetch(
+          "https://www.googleapis.com/userinfo/v2/me",
+          {
+            headers: { Authorization: `Bearer${token}`}
+          });
+            const user = await response.json();
+            await AsyncStorage.setItem("@user", JSON.stringify(user));
+            setUser(user);
+          } catch(e) {console.log(e)};
+  }
      
   
 
-  React.useEffect(() => {
-    if (response?.type = "succes") {
-      setAccessToken(response.authentication.accessToken)
-      accessToken && fetchUserInfo();
-    }
-  }, [response, accessToken])
 
   async function fetchUserInfo() {
     let response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
@@ -51,15 +76,30 @@ Authorization: `Bearer${accessToken}`
   if(user)
 
   return (
-    <View style= {{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={{fontSize: 35, fontWeight: 'bold', marginBottom: 20}}>
-            Welcome
-        </Text>
-        <Image source={{uri: user.picture}} style={{width: 100, height: 100, borderRadius: 50}} />
-        <Text style={{fontSize: 20, fontWeight: 'bold'}}>{user.name}</Text>
-    </View>
-  );
-}}
+    <View style={styles.card} >
+  {userInfo?.picture && (
+    <Image source={{ uri: user?.picture }} style=(styles.image} />
+   )}
+  <Text style={styles.text}>Email: {user.email}</Text>
+  <Text style=(styles.text)>
+    Verified: {user.verified_email ? "yes" : "no"}
+  </Text>
+  <Text style={styles.text}>Name: {user.name)</Text>
+  
+ <View>
+  )}
+<Button
+    title=" remove local store"
+    onPress={async ( ) => await AsyncStorage.removeItem( ("@user")}
+/>
+</View>
+);
+}
+
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -68,5 +108,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  card: {
+    borderWidth: 1,
+    borderRadius: 15,
+    padding: 15,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  }
 });
+
+
 
